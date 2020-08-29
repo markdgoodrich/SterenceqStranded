@@ -1,0 +1,9 @@
+
+
+	Here are the image files used for the backgrounds.  
+These directories and images must be named accordingly:
+For a series of backgrounds in a level, store them all in a single folder titled "lvlX", where X = the level number.
+Each background must then be stored numerically, with the file name "Y.png", where Y is sequence number of the background: left-most background is 0, and it increments from there.
+
+
+We'll need to find a way to handle Y coordiante movement at some point.
