@@ -20,12 +20,39 @@ playerY = 350
 deltaX = 0
 deltaY = 0
 
-def draw_player(x,y):
+def draw_player(x,y, eyex, eyey):
     screen.blit(player, (x,y)) #Draw player at specific inputs
+
+    #draws eyes
+    #pygame.draw.circle(screen, (0,0,0), (x+40, y+55), 3)
+    #pygame.draw.circle(screen, (0,0,0), (x+55, y+55), 3)
+
+    if eyey == 0 and eyex == 0:
+        pygame.draw.circle(screen, (0,0,0), (x+40, y+55), 3)
+        pygame.draw.circle(screen, (0,0,0), (x+55, y+55), 3)
+
+    elif eyex < 0:
+        pygame.draw.circle(screen, (0,0,0), (x+37, y+55), 3)
+        pygame.draw.circle(screen, (0,0,0), (x+52, y+55), 3)
+        print("eye x is shifting left")
+
+    elif eyex > 0:
+        pygame.draw.circle(screen, (0,0,0), (x+43, y+55), 3)
+        pygame.draw.circle(screen, (0,0,0), (x+58, y+55), 3)
+        print("eye x is shifting right")
+
+    if eyey < 0:
+        pygame.draw.circle(screen, (0,0,0), (x+40, y+52), 3)
+        pygame.draw.circle(screen, (0,0,0), (x+55, y+52), 3)
+        print("eye Y is shifting up")
+    elif eyey > 0:
+        pygame.draw.circle(screen, (0,0,0), (x+40, y+58), 3)
+        pygame.draw.circle(screen, (0,0,0), (x+55, y+58), 3)
+        print("eye Y is moving down")
 
 
 message = "This is a large string to test the wrap-around capabilities of the function"
-font = pygame.font.Font('/home/markgoodrich/Documents/SpaceInvader_tutorial/neo_scifi.ttf', 32)
+#font = pygame.font.Font('/home/markgoodrich/Documents/SpaceInvader_tutorial/neo_scifi.ttf', 32)
 messageX = 30
 messageY = 30
 is_message = True
@@ -74,7 +101,9 @@ def draw_background(level, image_num):
      #   Check to see if it exists
     if os.path.isfile(background_file):
          screen.blit(pygame.image.load(background_file), [0, 0])
-
+ 
+        
+    
 
 #   Click and Drag
 # https://github.com/furas/python-examples/blob/master/pygame/drag-many-images/example-1-drag-two_images.py
@@ -176,6 +205,6 @@ while game_running:
     elif playerY <= 0:
         playerY = 0
 
-    draw_player(playerX, playerY)
+    draw_player(playerX, playerY, deltaX, deltaY)
 
     pygame.display.update()

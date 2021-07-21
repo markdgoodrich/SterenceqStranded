@@ -10,3 +10,10 @@ Can't pick up the cactii; too prickly -> Shave the cactii (might have to salvage
 Obviously provide vocal cues to help player, such as "The local fauna must have water!" and "Ow! It's too prickly to pick up!", etc.
 
 
+
+
+Moving eyes
+1) Remove pupils from original art
+2) Draw pupils in eyes. default to center of eye, but have placement be last directional key press & persist.
+
+
