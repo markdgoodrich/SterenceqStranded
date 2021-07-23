@@ -2,6 +2,8 @@ import pygame
 import os
 import time
 
+from PIL import Image #Needed to get dimensions of map assets
+
 pygame.init()
 
 resolution_X = 800
@@ -34,25 +36,21 @@ def draw_player(x,y, eyex, eyey):
     elif eyex < 0:
         pygame.draw.circle(screen, (0,0,0), (x+37, y+55), 3)
         pygame.draw.circle(screen, (0,0,0), (x+52, y+55), 3)
-        print("eye x is shifting left")
 
     elif eyex > 0:
         pygame.draw.circle(screen, (0,0,0), (x+43, y+55), 3)
         pygame.draw.circle(screen, (0,0,0), (x+58, y+55), 3)
-        print("eye x is shifting right")
 
-    if eyey < 0:
+    elif eyey < 0:
         pygame.draw.circle(screen, (0,0,0), (x+40, y+52), 3)
         pygame.draw.circle(screen, (0,0,0), (x+55, y+52), 3)
-        print("eye Y is shifting up")
     elif eyey > 0:
         pygame.draw.circle(screen, (0,0,0), (x+40, y+58), 3)
         pygame.draw.circle(screen, (0,0,0), (x+55, y+58), 3)
-        print("eye Y is moving down")
 
 
 message = "This is a large string to test the wrap-around capabilities of the function"
-#font = pygame.font.Font('/home/markgoodrich/Documents/SpaceInvader_tutorial/neo_scifi.ttf', 32)
+font = pygame.font.Font('./fonts/neo_scifi.ttf', 32)
 messageX = 30
 messageY = 30
 is_message = True
@@ -78,20 +76,21 @@ def message_appearing_letters(message, font, x, y):
     is_message = False #to only display it once
     #time.sleep(len(message))
 
+'''
 def level_one():        #probably uneccessary
     #load level assests
-    ship1 = pygame.image.load("ship1.png")
-    trashcan = pygame.image.load("trashcan.png")
+    ship1 = pygame.image.load("./level_assets/lvl1/ship1.png")
+    trashcan = pygame.image.load("./level_assets/lvl1/trashcan.png")
 
     #draw background
-    screen.blit(pygame.image.load("Screen1.png"), [0, 0])
+    screen.blit(pygame.image.load("./backgrounds/lvl1/1.png"), [0, 0])
 
     screen.blit(ship1, (200, 200))
     screen.blit(trashcan, (500, 300))
 
     intro = "Priority 1: Put out that fire!"
-    #message_appearing_letters(intro, font, 10, 20)
-
+    message_appearing_letters(intro, font, 10, 20)
+'''
 
 current_level = 1
 current_background = 1
@@ -101,17 +100,37 @@ def draw_background(level, image_num):
      #   Check to see if it exists
     if os.path.isfile(background_file):
          screen.blit(pygame.image.load(background_file), [0, 0])
- 
-        
-    
+
+    #how to draw elements for specific image_num on levels?
+
+def draw_level_assets(level, sub_level):
+    map_assets = "./level_assets/lvl"+str(level)+"/map"+str(sub_level)+"/"
+    for image in os.listdir(map_assets):
+        image_asset = pygame.image.load(str(map_assets) + str(image))
+
+        #Generates interactable rectangle
+        image_size = Image.open(str(map_assets) + str(image)).size #returns (x, y) size of image
+        size_x, size_y = str(image_size).split(",")
+        size_x = size_x.replace('(','')
+        size_y = size_y.replace(')','')
+        image_rect = image_asset.get_rect(x=int(size_x), y=int(size_y))
+
+        #Draws the asset in the area specified in the level dictionary
+        screen.blit(image_asset, level_1[image])
 
 #   Click and Drag
 # https://github.com/furas/python-examples/blob/master/pygame/drag-many-images/example-1-drag-two_images.py
-ship1 = pygame.image.load("ship1.png")
-ship1_rect = ship1.get_rect(x=64, y=64) #sets an interactable rectangle range
 
-trashcan = pygame.image.load("trashcan.png")
-trashcan_rect = trashcan.get_rect(x=500, y=300)
+#dictionary for lvl 1
+#asset: location (x-y)
+#PNGs MUST be present in the level_asset directory AND in the dictionary.
+#Maybe keep dictionary file in the level_asset?
+level_1 = {
+'ship1.png':(64,64),
+'trashcan.png':(500,300),
+'cactus_pointy.png': (450,450),
+'cactus.png': (450,450)
+    }
 
 drag = 0
 
@@ -131,17 +150,9 @@ while game_running:
 
 
     draw_background(current_level, current_background)
-
-    # Draw assets for each background
-    if current_background == 1:
-        screen.blit(ship1, ship1_rect)
-        screen.blit(trashcan, trashcan_rect)
-    else:
-        pass
-
+    draw_level_assets(current_level, current_background)
 
     #message_appearing_letters(message, font, messageX, messageY)
-    #level_one()
 
     # Click and Drag
     if event.type == pygame.MOUSEBUTTONDOWN:
@@ -150,10 +161,10 @@ while game_running:
         drag = 0
     elif event.type == pygame.MOUSEMOTION:
         if drag:
-            ship1_rect.move_ip(event.rel)
+            ship1_rect.move_ip(event.rel)   #BROKEN with dynamic asset loading.
 
-    if trashcan_rect.colliderect(ship1_rect) and drag == 0: #Once it is in the location and mouse button up
-        display_message("Ship destroyed.  Good luck now.", font, 150, 200)
+    #if trashcan_rect.colliderect(ship1_rect) and drag == 0: #Once it is in the location and mouse button up
+    #    display_message("Ship destroyed.  Good luck now.", font, 150, 200)
 
 
 
